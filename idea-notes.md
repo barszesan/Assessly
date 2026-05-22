@@ -5,9 +5,9 @@
 - Cięko czasem wymyślić pytanie które sprawdzi znajomość danego tematu na odpowiednim poziomie.
 
 ### Najmniejszy zestaw funkcjonalności
-- Stworzenie profilu kandydata 
-- Dodanie CV oraz opisu stanowiska (formaty PDF oraz tekstowy)
-- Evaluacja AI czy kandydat pasuje do danej roli
+- Stworzenie profilu dla otwartej pozycji (opis projektu i wymagań jako text)
+- Dodanie jednego lub wielu CV do otwartej pozycji
+- Evaluacja AI który kandydat na bazie CV najleiej pasuje do danej roli (i czy w ogóle pasuje), w przypadku więcej niz 3 CV rekomendacja dwóch.
 - Rekomendacja AI jakie pytania zadać kandydatowi - wygenerowanie 5 pytań 
 - Prosty system kont użytkowników 
 

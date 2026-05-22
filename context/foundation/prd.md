@@ -2,7 +2,7 @@
 project: "Assessly"
 version: 1
 status: draft
-created: 2026-05-21
+created: 2026-05-22
 context_type: brownfield
 product_type: web-app
 target_scale:
@@ -15,78 +15,103 @@ timeline_budget:
 
 ## Current System Overview
 
-NextChapter is a book recommendation web application built as an Astro 6 SSR application with React 19 interactive islands, Tailwind 4, Supabase for auth and database, shadcn/ui components, and deployed to Cloudflare Workers. It currently serves a single user (the developer) who rates books and receives AI-generated reading recommendations. The existing auth system (email + password / OAuth), UI component library, layout shell, and deployment infrastructure are fully operational.
+Assessly is an SSR web application built with Astro 6, React 19 interactive islands, Tailwind 4, Supabase (auth + database + storage), shadcn/ui components, and deployed to Cloudflare Workers. It currently implements a candidate-first evaluation flow (upload one CV, match against a job description). The system serves a small internal recruiting team. Auth is email + password or OAuth (Google) via Supabase with a flat user model (no roles).
+
+The entire tech stack, auth system, UI component library, and deployment infrastructure are preserved. All product-specific features (candidate upload, single-candidate evaluation, job description management) are replaced with a position-first flow.
 
 ## Problem Statement & Motivation
 
-Recruiters on a small team spend too much time manually reviewing CVs and matching them to open positions. It is also difficult to come up with interview questions that accurately test a candidate's knowledge of a specific topic at the appropriate level.
+Recruiters on a small team spend too much time manually reviewing CVs and matching them to open positions. When multiple candidates apply, comparing them is manual and error-prone. It's also difficult to come up with interview questions that accurately test a candidate's knowledge at the right level for a specific role.
 
-Existing tools fragment this workflow: ATS platforms are expensive and bloated for a small team, LinkedIn Recruiter does not generate interview questions, and general-purpose AI (e.g., chat interfaces) requires manual prompting each time with no structured candidate tracking. No single tool combines CV upload, job description matching, AI evaluation, and targeted question generation in one flow.
+Existing tools fragment the workflow — ATS platforms are expensive and bloated, LinkedIn Recruiter doesn't compare candidates or generate questions, and general-purpose AI assistants require manual prompting per candidate with no structured tracking. The current system's candidate-first flow doesn't match the real workflow: positions come first, then CVs arrive over time.
 
-The current workaround is manual: read the CV, mentally compare it to the job description, and brainstorm questions from scratch. The cost is time — minutes per candidate that compound across dozens of applicants per role.
+The current workaround is reviewing each CV manually against position requirements, maintaining mental comparisons across candidates, and crafting interview questions from scratch — costing significant time per hiring round.
 
 ## User & Persona
 
-**Primary persona:** Recruiter / hiring manager on the team. Reviews candidates for open positions, needs to quickly assess fit and prepare for interviews. Limited time per candidate — wants a confident evaluation and ready-to-use questions without manual analysis. This is the same user who currently has an account in the system (auth is preserved).
+**Primary persona:** Recruiter / hiring manager on the team. Opens positions, collects CVs over time, needs to quickly identify the best-fit candidate(s) and prepare targeted interview questions — without manually reading and comparing every CV against requirements.
+
+This change affects existing users of the current system — they move from a candidate-first flow to a position-first flow. No new user roles are introduced.
 
 ## Success Criteria
 
 ### Primary
-- 80% of candidates identified as matching a role by AI evaluation pass the first recruitment stage.
-- Recruiter completes the full flow (upload CV, select job description, receive evaluation + questions) in a single session.
+- Recruiter completes the full flow (create position → upload CVs → get ranking + questions) in a single session.
+- 80% of candidates identified as top match by AI pass the first recruitment stage.
 
 ### Secondary
-- Time to evaluate a candidate drops significantly compared to manual CV review.
+- Time to evaluate a batch of candidates drops significantly vs. manual CV review.
 
 ### Guardrails
-- AI must not produce biased or discriminatory evaluations.
-- Existing authentication and user data must not break during the pivot.
-- AI evaluation and question generation response appears within 15 seconds of submission.
+- AI must not produce biased or discriminatory evaluations (gender, ethnicity, age, etc.).
+- Uploaded PDFs must not be accessible to other users (strict per-user data isolation).
+- Existing auth system must continue working unchanged.
 
 ## User Stories
 
-### US-01: Recruiter evaluates a candidate for a role
+### US-01: Recruiter evaluates multiple candidates for a position
 
-- **Given** a logged-in recruiter with at least one job description saved
-- **When** they upload a candidate's CV (text) and select a job description
-- **Then** they see an AI evaluation scoring the candidate against each requirement from the job description, highlighting gaps, and 5 interview questions targeting those identified gaps
+- **Given** a logged-in recruiter with an open position (structured requirements + seniority)
+- **When** they upload 3+ CVs (PDF), confirm extractions, and trigger AI evaluation
+- **Then** they see a ranking of candidates against requirements, with best match + option B highlighted, plus 5 interview questions for the position
+
+### US-02: Recruiter evaluates a single candidate
+
+- **Given** a logged-in recruiter with an open position and 1 uploaded CV
+- **When** they trigger AI evaluation
+- **Then** they see an individual fit assessment (not a ranking) with per-requirement scoring, and the AI may indicate the candidate doesn't meet the bar
 
 ## Scope of Change
 
-- [new] Recruiter can upload a CV (text format) which becomes the candidate profile — uploading creates the candidate record directly.
-- [new] Recruiter can add a job description (text format or reusable template).
-- [new] Recruiter can request AI evaluation of candidate-role fit — evaluation scores against explicit requirements extracted from the job description.
-- [new] Recruiter can view 5 AI-generated interview questions targeting skill gaps identified in the evaluation.
-- [removed] Book recommendation features (bookshelf, ratings, AI book recommendations, book search) — replaced by recruitment features.
-- [preserved] Authentication flow (email + password / OAuth sign-up and login).
+### Position Management
+- [new] Create an open position with a structured requirements list (not free-text prose) and seniority level.
+  > Socrates: Counter-argument considered: "Free-text requirements are ambiguous — AI can't reliably extract criteria from unstructured prose." Resolution: force structured requirements list so AI has explicit criteria to evaluate against.
+
+- [new] View, edit, and delete open positions. Editing a position after evaluation triggers a warning that results may be stale.
+  > Socrates: Counter-argument considered: "Editing after evaluation invalidates results." Resolution: warn but allow editing — don't lock the position.
+
+### CV Management
+- [new] Upload one or more CVs (PDF) to an open position, with an extraction preview/confirmation step after upload.
+  > Socrates: Counter-argument considered: "PDF text extraction is unreliable for complex layouts." Resolution: add extraction preview so recruiter can confirm/correct extracted text before evaluation.
+
+### AI Evaluation
+- [new] Request AI evaluation that: for 1 CV — individual fit assessment only (no ranking); for 2 CVs — AI picks the better match (no option B); for 3+ CVs — AI picks best match + option B. AI can reject all candidates if none meet minimum bar.
+  > Socrates: Counter-argument considered: "Ranking is meaningless with <3 CVs." Resolution: tiered behavior — individual assessment for 1, pick better for 2, full ranking with option B for 3+.
+
+- [new] View 5 AI-generated interview questions based on position requirements and seniority level (questions are per-position, not per-candidate).
+  > Socrates: Counter-argument considered: "Per-candidate questions double AI cost and output." Resolution: questions are generated for the position based on requirements and seniority, not tailored to individual candidates.
+
+### Authentication
+- [preserved] Sign up / log in via email or OAuth. No changes to auth flow.
 
 ## Constraints & Compatibility
 
-- The entire existing tech stack is preserved — only product-specific features change.
-- The authentication flow must continue working unchanged; existing user accounts remain valid.
-- No existing external integrations, APIs, or data contracts need to be respected beyond auth — the book-related database tables are replaced by recruitment-domain tables.
-- No data migration is needed — existing book/recommendation data can be dropped without consequence.
-- No backward compatibility concerns for end users — the sole user is the developer/team pivoting the product.
+- **Backward compatibility:** No external API consumers exist. No URL contracts to preserve beyond auth routes.
+- **Data migration:** No data migration needed — previous product features (book recommendations) are fully replaced. Existing user accounts persist; product-specific tables are dropped and replaced.
+- **Existing integrations:** Auth provider integration must continue working unchanged.
+- **Preserved behavior:** Authentication flow (email + OAuth), user session management, and per-user data isolation patterns must not change.
 
 ## Business Logic Changes
 
-Assessly scores a candidate's CV against a job description's explicit requirements, identifies fit and gap areas per requirement, and generates interview questions that probe the identified skill gaps.
+This is a new domain rule replacing the prior single-candidate evaluation:
 
-The rule consumes: a candidate's CV (text) and a job description (text with explicit requirements). It produces: a per-requirement fit/gap assessment and 5 interview questions targeting the weakest areas. The recruiter encounters this rule when they submit a CV against a job description and trigger the evaluation.
+Assessly extracts text from uploaded CVs (PDF), scores each candidate per-requirement against a position's structured requirements list, ranks candidates comparatively (tiered by CV count: 1 = individual fit assessment, 2 = pick better match, 3+ = best match + option B), and generates 5 interview questions targeting the position's requirements at the stated seniority level. AI can reject all candidates if none meet minimum fitness.
 
-This is entirely new domain logic — the previous business logic (book genre preference inference and recommendation) is removed completely.
+The rule consumes: a position's structured requirements list + seniority level, and one or more extracted CV texts. It produces: per-requirement fit/gap scores per candidate, a comparative ranking (tiered), an optional rejection verdict, and 5 position-level interview questions. The recruiter encounters this when they trigger "Evaluate" on a position with uploaded CVs.
 
 ## Access Control Changes
 
-No access control changes — current model preserved. Email + password or OAuth login. Flat user model — all users are equal; each sees only their own candidates and evaluations. No admin role in MVP.
+No access control changes — current model preserved. Flat user model (email + OAuth login), each user sees only their own positions, candidates, and evaluations. No admin role, no team sharing in MVP.
 
 ## Non-Goals
 
-- No mobile app — web only for MVP. Rationale: constrain the surface to one platform; mobile adds deployment and UX complexity.
-- No live coding task generation. Rationale: explicitly deferred; CV evaluation + interview questions are the v1 scope.
+- No mobile app — web only for MVP. Rationale: constrain surface to one platform.
+- No other document formats — PDF only for CVs. Rationale: simplify extraction; DOCX/images deferred.
+- No live coding task generation. Rationale: evaluation + questions are the v1 scope.
 - No candidate self-service (candidates never log in). Rationale: internal tool for recruiters only.
-- No ATS integration (no importing from other recruitment tools). Rationale: standalone tool for v1; integrations add complexity without proving the core value.
+- No ATS integration (no importing from other recruitment tools). Rationale: standalone tool for v1.
+- No team/org sharing of positions between users. Rationale: flat user model for MVP; collaboration deferred.
 
 ## Open Questions
 
-No open questions — all shape-notes signals were fully captured and the quality cross-check passed with no gaps.
+No open questions — all elements resolved during shaping.

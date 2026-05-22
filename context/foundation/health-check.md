@@ -1,134 +1,144 @@
 ---
 project: Assessly
-checked_at: 2026-05-21
+checked_at: 2026-05-22
 health_status: needs-attention
 context_type: brownfield
 stack_assessment_linked: true
 findings:
   critical: 0
   high: 1
-  moderate: 10
+  moderate: 9
   low: 0
-  test_runner: not detected
-  ci_provider: GitHub Actions
-  ci_stages:
-    lint: true
-    test: false
-    build: true
-    type_check: implicit
-    security: false
+  config_gaps: 2
+test_runner: Vitest 4 (0 tests)
+ci_provider: GitHub Actions
 ---
 
 ## Pre-check: Dependency Audit
 
 ### Lockfile
 
-Present: `package-lock.json` (npm). Dependency versions are pinned and reproducible.
+`package-lock.json` present. Dependency versions are pinned — builds are reproducible.
 
 ### Security Audit
 
-| Severity | Count | Direct | Transitive |
-|----------|-------|--------|------------|
-| CRITICAL | 0     | 0      | 0          |
-| HIGH     | 1     | 0      | 1          |
-| MODERATE | 10    | 0      | 10         |
-| LOW      | 0     | 0      | 0          |
+| Severity | Count | Details |
+|----------|-------|---------|
+| CRITICAL | 0 | — |
+| HIGH | 1 | `devalue` — DoS via sparse array deserialization (transitive, via Astro/Svelte internals) |
+| MODERATE | 9 | Various transitive dependencies |
+| LOW | 0 | — |
 
-**HIGH finding:**
-- `devalue` (transitive) — Svelte devalue: DoS via sparse array deserialization. Advisory: https://github.com/advisories/GHSA-77vg-94rm-hx3p. This is a transitive dependency (not directly controlled); likely pulled in by Astro's SSR internals.
-
-**MODERATE findings:** 10 moderate-severity advisories in transitive dependencies. These are logged but do not require immediate action.
+The HIGH finding in `devalue` is a transitive dependency (comes through Astro's internals, not a direct dep). It's a DoS vector on sparse array deserialization — low practical risk for this project (internal tool, small user base), but worth tracking for the next Astro patch release that bumps it.
 
 ### Outdated Dependencies
 
-14 packages have newer versions available. No major version gaps (all within the same major version). No action needed — these are minor/patch updates that can be addressed during routine maintenance.
+Major version gaps (current → latest):
+
+| Package | Current | Latest | Risk |
+|---------|---------|--------|------|
+| `eslint` | 9.x | 10.x | Low — wait for ecosystem plugin support |
+| `typescript` | 5.x | 6.x | Medium — evaluate when Astro officially supports TS 6 |
+| `lint-staged` | 16.x | 17.x | Low — minor tooling upgrade |
+
+Minor/patch updates available for 13 other packages — routine maintenance, no breaking changes expected.
+
+**Pre-check summary:** Lockfile present. Audit: 0 CRITICAL, 1 HIGH (transitive), 9 MODERATE. Outdated: 3 packages with major version gaps (none urgent).
 
 ## In-check: Test Infrastructure & CI/CD
 
 ### Test Runner
 
-**Not detected.** No vitest, jest, playwright, or cypress configuration found. No test-related scripts in package.json. No test files detected in the project.
+**Vitest 4.1 detected** — configured in `package.json` with `test` and `test:watch` scripts.
 
-**Impact on AI assistant workflows:** The AI assistant cannot self-verify its changes via automated tests. Regression detection depends entirely on manual testing, the lint step, and the build step in CI. For the Assessly pivot (new domain logic for CV evaluation and question generation), this means AI-generated code cannot be automatically validated against expected behavior.
-
-**Cross-reference with stack-assessment:** This confirms the sole advisory gap identified in `context/foundation/stack-assessment.md`: "No test runner configured — the agent cannot self-verify changes."
+**Finding: 0 tests exist.** The test runner is configured and executes successfully, but no test files are present. The AI assistant cannot verify its own changes without tests. This is the most significant finding for agent-readiness.
 
 ### CI/CD Configuration
 
-**Provider:** GitHub Actions (`.github/workflows/ci.yml`)
+**GitHub Actions** detected (`.github/workflows/ci.yml`).
 
-| Stage | Status | Details |
-|-------|--------|---------|
-| Lint | present | `npm run lint` (eslint with TypeScript, React, Astro, a11y plugins) |
-| Test | missing | No test step — consistent with no test runner |
-| Build | present | `npm run build` (includes Astro type checking) |
-| Type-check | implicit | Astro build runs `@astrojs/check`; no explicit `tsc --noEmit` step |
-| Security | missing | No `npm audit`, Dependabot, CodeQL, or Snyk step |
-| Deploy | present | Cloudflare Pages deploy on push to master (via wrangler-action) |
+| Stage | Status | Notes |
+|-------|--------|-------|
+| Lint | ✓ | `npm run lint` (ESLint) |
+| Build | ✓ | `npm run build` (Astro build — includes type checking) |
+| Test | ✗ | No `npm test` step in CI pipeline |
+| Type check | ~ | Implicit via `astro build` (catches type errors at build time) |
+| Security | ✗ | No `npm audit` or Dependabot/CodeQL step |
+| Deploy | ✓ | Cloudflare Pages via wrangler-action on push to master |
 
-The CI pipeline is functional but minimal: lint + build + deploy. It catches syntax errors, lint violations, and type errors (via Astro build), but cannot catch logic regressions (no tests) or security vulnerabilities (no audit step).
+### Configuration Completeness
 
-### Configuration Files
+| File | Status | Severity |
+|------|--------|----------|
+| `.gitignore` | ✓ present | — |
+| `.prettierrc.json` | ✓ present | — |
+| `eslint.config.js` | ✓ present | — |
+| `tsconfig.json` (strict) | ✓ present | — |
+| `.env.example` | ✓ present | — |
+| `AGENTS.md` | ✓ present | — |
+| `CLAUDE.md` | ✓ present | — |
+| `.editorconfig` | ✗ missing | low |
+| CI test step | ✗ missing | medium |
 
-| File | Status | Notes |
-|------|--------|-------|
-| `.gitignore` | present | — |
-| `.env.example` | present | Documents required environment variables |
-| `tsconfig.json` (strict) | present | Extends `astro/tsconfigs/strict` |
-| ESLint | present | Flat config (`eslint.config.js`) with TS, React, Astro, a11y, Prettier plugins |
-| Prettier | present | Via `eslint-plugin-prettier` + `prettier-plugin-astro` + `prettier-plugin-tailwindcss` |
-| Husky + lint-staged | present | Pre-commit hooks: eslint --fix on TS/TSX/Astro, prettier --write on JSON/CSS/MD |
-| `.editorconfig` | missing | Low severity — Prettier handles formatting |
-| CLAUDE.md | present | AI assistant instruction file |
-| AGENTS.md | present | AI assistant instruction file |
+**In-check summary:** Test runner detected (Vitest), 0 tests written. CI: GitHub Actions (lint ✓, build ✓, test ✗, security ✗). 2 configuration gaps (1 medium, 1 low).
 
-## Prioritized Fixes
+## Cross-reference: Stack Assessment
+
+Stack assessment (`context/foundation/stack-assessment.md`) gave a verdict of **ready** — all four quality gates pass. No compensation strategies needed.
+
+Health-check confirms the stack choice is sound. The gaps are operational (no tests written, CI doesn't run tests) rather than architectural. The stack itself is fully agent-friendly; the project just needs test coverage to let the agent verify its own work.
+
+## Findings & Prioritized Fixes
 
 ### Category A — Fix before AI assistant work
 
-#### 1. Install and configure a test runner (significant — ~30 min)
+#### 1. No tests written (HIGH impact for agent workflows)
 
-**What:** No test runner is configured. The AI assistant cannot verify its changes.
+**Finding:** Vitest is configured but 0 test files exist. The AI assistant cannot verify its changes produce correct behavior.
 
-**Why it matters:** For the Assessly pivot, new business logic (CV evaluation, question generation) will be written by the AI assistant. Without tests, there is no automated way to verify correctness, catch regressions, or validate edge cases.
+**Why it matters:** Without tests, the agent works blind — it generates code but has no way to prove correctness. Every change requires manual verification, defeating the purpose of agent assistance.
+
+**Fix:** Write at least one integration test for each major flow the agent will touch. For the planned scope of change (position management, CV upload, AI evaluation), create test files:
+
+```bash
+# Create test directory structure
+mkdir -p src/__tests__
+
+# Example: create a placeholder test file
+# Then write tests for position CRUD, CV upload validation, etc.
+```
+
+**Effort:** moderate (30–60 min for initial test scaffolding + first meaningful test)
+
+#### 2. CI pipeline missing test step (MEDIUM impact)
+
+**Finding:** GitHub Actions runs lint → build but doesn't run `npm test`. Even when tests are written, CI won't catch regressions.
+
+**Fix:** Add a test step to `.github/workflows/ci.yml` after lint:
+
+```yaml
+- run: npm test
+```
+
+**Effort:** quick (< 5 min)
+
+#### 3. HIGH audit vulnerability in `devalue` (LOW practical risk)
+
+**Finding:** `devalue` has a DoS vulnerability via sparse array deserialization. It's a transitive dependency from Astro's internals.
+
+**Why it matters:** Low practical risk for an internal tool with small user base. However, it's good hygiene to track and patch when Astro releases an update.
+
+**Fix:** Monitor for Astro patch releases that bump `devalue`. Run `npm update astro` when available. No immediate action required.
+
+**Effort:** quick (< 5 min when patch is available)
+
+#### 4. Missing `.editorconfig` (LOW impact)
+
+**Finding:** No `.editorconfig` present. IDE behavior for indentation/line endings may vary across environments.
 
 **Fix:**
 ```bash
-npm init vitest@latest
-```
-
-Then add a test script to `package.json`:
-```json
-"scripts": {
-  "test": "vitest run",
-  "test:watch": "vitest"
-}
-```
-
-Vitest is recommended because it shares Vite's config (already in use via Astro), supports TypeScript natively, and is the most popular test runner in the Vite ecosystem.
-
-#### 2. Review HIGH transitive vulnerability (quick — < 5 min)
-
-**What:** `devalue` has a DoS vulnerability via sparse array deserialization (GHSA-77vg-94rm-hx3p). It's a transitive dependency — likely pulled in by Astro internals.
-
-**Why it matters:** While this is a DoS vector (not data exposure), it's in the SSR rendering path. For an internal tool with small user base, the risk is low but should be tracked.
-
-**Fix:**
-```bash
-npm audit
-# Check if a patched version is available via Astro update:
-npm update astro
-# If still present after update, accept the risk for now — it's transitive and low-impact for an internal tool.
-```
-
-#### 3. Add .editorconfig (quick — < 5 min)
-
-**What:** No `.editorconfig` file. Low severity since Prettier handles formatting, but it ensures consistent indentation in editors that don't have Prettier integration.
-
-**Why it matters:** Minor — Prettier + lint-staged already enforce formatting. This is a convenience for IDE consistency.
-
-**Fix:** Create `.editorconfig`:
-```ini
+cat > .editorconfig << 'EOF'
 root = true
 
 [*]
@@ -138,44 +148,35 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+EOF
 ```
+
+**Effort:** quick (< 5 min)
 
 ### Category B — Addressed in upcoming lessons
 
-#### 4. Add test step to CI (upcoming lesson)
+#### CI security scanning
 
-**What:** CI runs lint + build but no test step.
-
-**Why it matters:** Once a test runner is installed (fix #1), CI should run tests to prevent regressions from merging.
-
-**Forward reference:** You'll set up CI enhancements in [Sprint Zero z Agentem: infrastruktura, walking skeleton i pierwszy deploy (M1L5)](https://platforma.przeprogramowani.pl/external/10xdevs-3/m1-l5). For now, local test runner coverage is what matters for AI assistant collaboration.
-
-#### 5. Add security scanning to CI (upcoming lesson)
-
-**What:** No `npm audit` or Dependabot step in the CI pipeline.
-
-**Why it matters:** Security vulnerabilities in dependencies are only caught by manual `npm audit` runs today. Automated scanning surfaces them before merge.
-
-**Forward reference:** Infrastructure and CI/CD hardening is covered in [Sprint Zero z Agentem (M1L5)](https://platforma.przeprogramowani.pl/external/10xdevs-3/m1-l5).
+No `npm audit` step or Dependabot/CodeQL integration in CI. This is addressed in the infrastructure lesson — for now, local `npm audit` visibility is sufficient.
 
 ## Summary
 
-**Verdict: needs-attention** — The project is well-configured for code quality (strict TypeScript, comprehensive linting, formatting, pre-commit hooks) but lacks a test runner, which is the primary gap for AI assistant collaboration. One HIGH transitive vulnerability exists but is low-risk for an internal tool.
+**Verdict: needs-attention** — the project is well-configured and the stack is agent-friendly, but the absence of tests is a significant gap for agent-assisted development. The agent needs tests to verify its own work.
 
-**Strengths:**
-- Lockfile present — reproducible builds
-- Strong linting and formatting (ESLint + Prettier + lint-staged + Husky)
-- TypeScript strict mode with Astro-specific type checking
-- CI pipeline functional (lint + build + deploy)
-- Environment variables documented (`.env.example`)
-- AI instruction files present (CLAUDE.md, AGENTS.md)
+**Key strengths:**
+- Stack passes all four quality gates (from stack-assessment)
+- Lockfile present, builds reproducible
+- CI pipeline exists with lint + build + deploy
+- Instruction files (AGENTS.md, CLAUDE.md) already present
+- Formatter + linter enforced via pre-commit hooks
+- TypeScript strict mode active
 
-**Key gaps (Category A):**
-- No test runner — the AI assistant cannot self-verify changes (priority #1)
-- 1 HIGH transitive vulnerability — low-risk but worth tracking
+**Key gaps:**
+- No tests written (Vitest configured but empty) — highest priority
+- CI doesn't run tests
+- 1 HIGH transitive vulnerability (low practical risk)
 
-**Key gaps (Category B — upcoming lessons):**
-- No test step in CI
-- No security scanning in CI
-
-**Recommended next step:** Install Vitest (fix #1), then proceed to AI assistant onboarding. The brownfield chain is complete — both greenfield and brownfield paths converge with equivalent context artifacts from this point.
+**Recommended priority:**
+1. Write initial tests for the new position-first flow as you build it (integrate testing into the development process)
+2. Add `npm test` to CI pipeline
+3. Track `devalue` vulnerability for upstream patch
