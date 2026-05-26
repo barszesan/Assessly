@@ -363,21 +363,21 @@ Verify RLS policies work correctly by running test queries against the local Sup
 
 #### Automated
 
-- [x] 2.1 TypeScript compiles without errors: `npm run build`
-- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.1 TypeScript compiles without errors: `npm run build` — b058836
+- [x] 2.2 Linting passes: `npm run lint` — b058836
 
 #### Manual
 
-- [x] 2.3 Types importable from `@/types` in any file within `src/`
+- [x] 2.3 Types importable from `@/types` in any file within `src/` — b058836
 
 ### Phase 3: Verification
 
 #### Automated
 
-- [ ] 3.1 Migration applies cleanly after adjustments: `npx supabase db reset`
-- [ ] 3.2 Build still passes: `npm run build`
+- [x] 3.1 Migration applies cleanly after adjustments: `npx supabase db reset`
+- [x] 3.2 Build still passes: `npm run build`
 
 #### Manual
 
-- [ ] 3.3 RLS verification script passes — user A cannot see/modify user B's data
-- [ ] 3.4 Storage bucket `cvs` rejects non-PDF uploads
+- [x] 3.3 RLS verification script passes — user A cannot see/modify user B's data
+- [x] 3.4 Storage bucket `cvs` rejects non-PDF uploads
