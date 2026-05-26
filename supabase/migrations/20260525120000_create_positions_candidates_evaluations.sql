@@ -2,7 +2,7 @@
 CREATE TYPE seniority_level AS ENUM ('junior', 'mid', 'senior', 'lead', 'principal');
 
 -- Updated_at trigger function (reused across tables)
-CREATE OR REPLACE FUNCTION update_updated_at()
+CREATE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = now();
@@ -123,4 +123,5 @@ CREATE POLICY "Users can delete own evaluations"
 
 -- Storage bucket for CV PDFs
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-VALUES ('cvs', 'cvs', false, 5242880, ARRAY['application/pdf']);
+VALUES ('cvs', 'cvs', false, 5242880, ARRAY['application/pdf'])
+ON CONFLICT (id) DO NOTHING;

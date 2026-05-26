@@ -4,6 +4,9 @@
 \echo '=== RLS Verification Script ==='
 \echo ''
 
+-- Wrap everything in a transaction that rolls back so the script is safely re-runnable
+BEGIN;
+
 -- Setup: Create two test users in auth.users
 DO $$
 BEGIN
@@ -182,3 +185,6 @@ RESET request.jwt.claims;
 
 \echo ''
 \echo '=== RLS Verification Complete ==='
+
+-- Rollback all test data so the script can be re-run safely
+ROLLBACK;
