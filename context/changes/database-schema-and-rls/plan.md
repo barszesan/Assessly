@@ -349,26 +349,26 @@ Verify RLS policies work correctly by running test queries against the local Sup
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly: `npx supabase db reset`
-- [x] 1.2 No SQL syntax errors in migration file
-- [x] 1.3 All three tables exist with correct columns: `npx supabase db lint`
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` — a38771c
+- [x] 1.2 No SQL syntax errors in migration file — a38771c
+- [x] 1.3 All three tables exist with correct columns: `npx supabase db lint` — a38771c
 
 #### Manual
 
-- [ ] 1.4 Tables visible in Supabase Studio with correct columns and types
-- [ ] 1.5 RLS shown as enabled on all three tables
-- [ ] 1.6 Storage bucket `cvs` visible in Storage section
+- [x] 1.4 Tables visible in Supabase Studio with correct columns and types — a38771c
+- [x] 1.5 RLS shown as enabled on all three tables — a38771c
+- [x] 1.6 Storage bucket `cvs` visible in Storage section — a38771c
 
 ### Phase 2: TypeScript Types
 
 #### Automated
 
-- [ ] 2.1 TypeScript compiles without errors: `npm run build`
-- [ ] 2.2 Linting passes: `npm run lint`
+- [x] 2.1 TypeScript compiles without errors: `npm run build`
+- [x] 2.2 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.3 Types importable from `@/types` in any file within `src/`
+- [x] 2.3 Types importable from `@/types` in any file within `src/`
 
 ### Phase 3: Verification
 
