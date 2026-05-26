@@ -374,10 +374,10 @@ Verify RLS policies work correctly by running test queries against the local Sup
 
 #### Automated
 
-- [x] 3.1 Migration applies cleanly after adjustments: `npx supabase db reset`
-- [x] 3.2 Build still passes: `npm run build`
+- [x] 3.1 Migration applies cleanly after adjustments: `npx supabase db reset` — d3a7b35
+- [x] 3.2 Build still passes: `npm run build` — d3a7b35
 
 #### Manual
 
-- [x] 3.3 RLS verification script passes — user A cannot see/modify user B's data
-- [x] 3.4 Storage bucket `cvs` rejects non-PDF uploads
+- [x] 3.3 RLS verification script passes — user A cannot see/modify user B's data — d3a7b35
+- [x] 3.4 Storage bucket `cvs` rejects non-PDF uploads — d3a7b35
