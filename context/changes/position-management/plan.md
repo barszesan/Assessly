@@ -510,13 +510,13 @@ Wire up navigation flows, add loading states, handle edge cases, and redirect da
 
 #### Automated
 
-- [x] 4.1 Build passes: `npm run build`
-- [x] 4.2 Lint passes: `npm run lint`
+- [x] 4.1 Build passes: `npm run build` — f6ae10d
+- [x] 4.2 Lint passes: `npm run lint` — f6ae10d
 
 #### Manual
 
-- [x] 4.3 Sign-in redirects to `/positions`
-- [x] 4.4 `/` and `/dashboard` redirect to `/positions` for authenticated users
-- [x] 4.5 Loading skeleton shows while positions fetch
-- [x] 4.6 Position detail page displays all fields
-- [x] 4.7 Full CRUD flow works end-to-end seamlessly
+- [x] 4.3 Sign-in redirects to `/positions` — f6ae10d
+- [x] 4.4 `/` and `/dashboard` redirect to `/positions` for authenticated users — f6ae10d
+- [x] 4.5 Loading skeleton shows while positions fetch — f6ae10d
+- [x] 4.6 Position detail page displays all fields — f6ae10d
+- [x] 4.7 Full CRUD flow works end-to-end seamlessly — f6ae10d
