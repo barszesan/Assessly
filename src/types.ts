@@ -12,6 +12,7 @@ export interface Position {
   description: string | null;
   seniority: SeniorityLevel;
   requirements: Requirement[];
+  team: string | null;
   created_at: string;
   updated_at: string;
 }
