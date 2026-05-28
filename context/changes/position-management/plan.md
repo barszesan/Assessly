@@ -479,32 +479,32 @@ Wire up navigation flows, add loading states, handle edge cases, and redirect da
 
 #### Automated
 
-- [x] 2.1 Build passes: `npm run build`
-- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.1 Build passes: `npm run build` — 27bb79c
+- [x] 2.2 Lint passes: `npm run lint` — 27bb79c
 
 #### Manual
 
-- [x] 2.3 Empty state with CTA renders at `/positions`
-- [x] 2.4 Positions display in card grid after creation
-- [x] 2.5 Delete confirmation dialog works and removes position
-- [x] 2.6 Topbar shows Positions link for authenticated users
-- [x] 2.7 Unauthenticated access redirects to sign-in
+- [x] 2.3 Empty state with CTA renders at `/positions` — 27bb79c
+- [x] 2.4 Positions display in card grid after creation — 27bb79c
+- [x] 2.5 Delete confirmation dialog works and removes position — 27bb79c
+- [x] 2.6 Topbar shows Positions link for authenticated users — 27bb79c
+- [x] 2.7 Unauthenticated access redirects to sign-in — 27bb79c
 
 ### Phase 3: Position Create/Edit Form
 
 #### Automated
 
-- [ ] 3.1 Build passes: `npm run build`
-- [ ] 3.2 Lint passes: `npm run lint`
+- [x] 3.1 Build passes: `npm run build`
+- [x] 3.2 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 3.3 Create form renders with all fields at `/positions/new`
-- [ ] 3.4 Submit creates position and redirects to list
-- [ ] 3.5 Validation errors display on invalid input
-- [ ] 3.6 Edit form pre-fills with existing data
-- [ ] 3.7 Stale evaluation banner shows when evaluation exists
-- [ ] 3.8 Requirements editor: add, remove, expand for description
+- [x] 3.3 Create form renders with all fields at `/positions/new`
+- [x] 3.4 Submit creates position and redirects to list
+- [x] 3.5 Validation errors display on invalid input
+- [x] 3.6 Edit form pre-fills with existing data
+- [x] 3.7 Stale evaluation banner shows when evaluation exists
+- [x] 3.8 Requirements editor: add, remove, expand for description
 
 ### Phase 4: Integration & Polish
 

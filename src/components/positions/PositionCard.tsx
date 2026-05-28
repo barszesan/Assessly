@@ -9,8 +9,6 @@ const seniorityColors: Record<SeniorityLevel, string> = {
   junior: "bg-green-100 text-green-800",
   mid: "bg-blue-100 text-blue-800",
   senior: "bg-purple-100 text-purple-800",
-  lead: "bg-orange-100 text-orange-800",
-  principal: "bg-red-100 text-red-800",
 };
 
 interface PositionCardProps {

@@ -1,4 +1,4 @@
-export type SeniorityLevel = "junior" | "mid" | "senior" | "lead" | "principal";
+export type SeniorityLevel = "junior" | "mid" | "senior";
 
 export interface Requirement {
   name: string;

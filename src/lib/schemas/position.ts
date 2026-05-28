@@ -12,7 +12,7 @@ const requirementSchema = z.object({
 export const createPositionSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(200, "Title must be 200 characters or less"),
   description: z.string().max(2000, "Description must be 2000 characters or less").optional(),
-  seniority: z.enum(["junior", "mid", "senior", "lead", "principal"], {
+  seniority: z.enum(["junior", "mid", "senior"], {
     errorMap: () => ({ message: "Invalid seniority level" }),
   }),
   team: z.string().trim().max(200, "Team must be 200 characters or less").optional(),
