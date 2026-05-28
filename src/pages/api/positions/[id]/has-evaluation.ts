@@ -1,11 +1,9 @@
 import type { APIRoute } from "astro";
 import { createClient } from "@/lib/supabase";
 import { positionHasEvaluation } from "@/lib/services/positions";
-import { jsonResponse, errorResponse, requireAuth } from "@/lib/api-helpers";
+import { jsonResponse, errorResponse, requireAuth, UUID_REGEX } from "@/lib/api-helpers";
 
 export const prerender = false;
-
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const GET: APIRoute = async (context) => {
   const auth = requireAuth(context.locals);

@@ -2,11 +2,9 @@ import type { APIRoute } from "astro";
 import { createClient } from "@/lib/supabase";
 import { updatePositionSchema } from "@/lib/schemas/position";
 import { getPosition, updatePosition, deletePosition } from "@/lib/services/positions";
-import { jsonResponse, errorResponse, parseJsonBody, requireAuth } from "@/lib/api-helpers";
+import { jsonResponse, errorResponse, parseJsonBody, requireAuth, UUID_REGEX } from "@/lib/api-helpers";
 
 export const prerender = false;
-
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const GET: APIRoute = async (context) => {
   const auth = requireAuth(context.locals);

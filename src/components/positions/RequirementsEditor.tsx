@@ -11,16 +11,34 @@ interface RequirementsEditorProps {
   onChange: (reqs: Requirement[]) => void;
 }
 
+interface RequirementWithId extends Requirement {
+  _id: string;
+}
+
+function generateId() {
+  return crypto.randomUUID();
+}
+
+function attachIds(reqs: Requirement[]): RequirementWithId[] {
+  return reqs.map((r) => ({ ...r, _id: generateId() }));
+}
+
 export function RequirementsEditor({ value, onChange }: RequirementsEditorProps) {
   const [inputValue, setInputValue] = useState("");
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [items, setItems] = useState<RequirementWithId[]>(() => attachIds(value));
 
-  const maxReached = value.length >= 20;
+  const maxReached = items.length >= 20;
+
+  function emitChange(next: RequirementWithId[]) {
+    setItems(next);
+    onChange(next.map(({ _id: _, ...rest }) => rest));
+  }
 
   function handleAdd() {
     const trimmed = inputValue.trim();
     if (!trimmed || maxReached) return;
-    onChange([...value, { name: trimmed }]);
+    emitChange([...items, { name: trimmed, _id: generateId() }]);
     setInputValue("");
   }
 
@@ -31,22 +49,17 @@ export function RequirementsEditor({ value, onChange }: RequirementsEditorProps)
     }
   }
 
-  function handleRemove(index: number) {
-    const next = value.filter((_, i) => i !== index);
-    onChange(next);
-    if (expandedIndex === index) setExpandedIndex(null);
-    else if (expandedIndex !== null && expandedIndex > index) {
-      setExpandedIndex(expandedIndex - 1);
-    }
+  function handleRemove(id: string) {
+    emitChange(items.filter((item) => item._id !== id));
+    if (expandedId === id) setExpandedId(null);
   }
 
-  function handleDescriptionChange(index: number, description: string) {
-    const next = value.map((req, i) => (i === index ? { ...req, description: description || undefined } : req));
-    onChange(next);
+  function handleDescriptionChange(id: string, description: string) {
+    emitChange(items.map((item) => (item._id === id ? { ...item, description: description || undefined } : item)));
   }
 
-  function toggleExpand(index: number) {
-    setExpandedIndex(expandedIndex === index ? null : index);
+  function toggleExpand(id: string) {
+    setExpandedId(expandedId === id ? null : id);
   }
 
   return (
@@ -76,26 +89,26 @@ export function RequirementsEditor({ value, onChange }: RequirementsEditorProps)
 
       {maxReached && <p className="text-muted-foreground text-xs">Maximum 20 requirements reached</p>}
 
-      {value.length > 0 && (
+      {items.length > 0 && (
         <div className="space-y-2">
-          {value.map((req, index) => (
-            <div key={index} className={cn("rounded-md border p-2", expandedIndex === index && "bg-muted/50")}>
+          {items.map((item) => (
+            <div key={item._id} className={cn("rounded-md border p-2", expandedId === item._id && "bg-muted/50")}>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => {
-                    toggleExpand(index);
+                    toggleExpand(item._id);
                   }}
                   className="text-muted-foreground hover:text-foreground flex-1 text-left text-sm"
                 >
                   <span className="flex items-center gap-1">
-                    {expandedIndex === index ? (
+                    {expandedId === item._id ? (
                       <ChevronUp className="size-3 shrink-0" />
                     ) : (
                       <ChevronDown className="size-3 shrink-0" />
                     )}
-                    <span className="text-foreground font-medium">{req.name}</span>
-                    {req.description && <span className="text-muted-foreground ml-1 text-xs">(has description)</span>}
+                    <span className="text-foreground font-medium">{item.name}</span>
+                    {item.description && <span className="text-muted-foreground ml-1 text-xs">(has description)</span>}
                   </span>
                 </button>
                 <Button
@@ -104,20 +117,20 @@ export function RequirementsEditor({ value, onChange }: RequirementsEditorProps)
                   size="icon"
                   className="size-6"
                   onClick={() => {
-                    handleRemove(index);
+                    handleRemove(item._id);
                   }}
-                  aria-label={`Remove ${req.name}`}
+                  aria-label={`Remove ${item.name}`}
                 >
                   <X className="size-3" />
                 </Button>
               </div>
-              {expandedIndex === index && (
+              {expandedId === item._id && (
                 <div className="mt-2">
                   <Textarea
                     placeholder="Optional description for this requirement..."
-                    value={req.description ?? ""}
+                    value={item.description ?? ""}
                     onChange={(e) => {
-                      handleDescriptionChange(index, e.target.value);
+                      handleDescriptionChange(item._id, e.target.value);
                     }}
                     rows={2}
                     className="text-sm"

@@ -42,9 +42,7 @@ export function PositionCard({ position, onDelete, onEdit }: PositionCardProps) 
         </div>
       </CardHeader>
       <CardContent className="flex-1">
-        {position.description && (
-          <p className="text-muted-foreground line-clamp-2 text-sm">{position.description}</p>
-        )}
+        {position.description && <p className="text-muted-foreground line-clamp-2 text-sm">{position.description}</p>}
         <p className={cn("text-muted-foreground text-sm", position.description && "mt-2")}>
           {position.requirements.length} requirement{position.requirements.length !== 1 ? "s" : ""}
         </p>
