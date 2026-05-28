@@ -29,7 +29,11 @@ export function PositionCard({ position, onDelete, onEdit }: PositionCardProps) 
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div>
-            <CardTitle className="text-base">{position.title}</CardTitle>
+            <CardTitle className="text-base">
+              <a href={`/positions/${position.id}`} className="hover:underline">
+                {position.title}
+              </a>
+            </CardTitle>
             {position.team && <p className="text-muted-foreground mt-1 text-xs">{position.team}</p>}
           </div>
           <Badge className={cn("shrink-0", seniorityColors[position.seniority])} variant="secondary">
@@ -38,12 +42,12 @@ export function PositionCard({ position, onDelete, onEdit }: PositionCardProps) 
         </div>
       </CardHeader>
       <CardContent className="flex-1">
-        <p className="text-muted-foreground text-sm">
+        {position.description && (
+          <p className="text-muted-foreground line-clamp-2 text-sm">{position.description}</p>
+        )}
+        <p className={cn("text-muted-foreground text-sm", position.description && "mt-2")}>
           {position.requirements.length} requirement{position.requirements.length !== 1 ? "s" : ""}
         </p>
-        {position.description && (
-          <p className="text-muted-foreground mt-2 line-clamp-2 text-sm">{position.description}</p>
-        )}
       </CardContent>
       <CardFooter className="flex items-center justify-between">
         <span className="text-muted-foreground text-xs">{createdDate}</span>

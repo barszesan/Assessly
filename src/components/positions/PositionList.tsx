@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { PositionCard } from "@/components/positions/PositionCard";
 import { DeletePositionDialog } from "@/components/positions/DeletePositionDialog";
+import { PositionListSkeleton } from "@/components/positions/PositionListSkeleton";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import type { Position } from "@/types";
@@ -56,13 +57,7 @@ export function PositionList() {
   }
 
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="bg-muted h-48 animate-pulse rounded-xl border" />
-        ))}
-      </div>
-    );
+    return <PositionListSkeleton />;
   }
 
   if (positions.length === 0) {

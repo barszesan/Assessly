@@ -494,29 +494,29 @@ Wire up navigation flows, add loading states, handle edge cases, and redirect da
 
 #### Automated
 
-- [x] 3.1 Build passes: `npm run build`
-- [x] 3.2 Lint passes: `npm run lint`
+- [x] 3.1 Build passes: `npm run build` — cfce21d
+- [x] 3.2 Lint passes: `npm run lint` — cfce21d
 
 #### Manual
 
-- [x] 3.3 Create form renders with all fields at `/positions/new`
-- [x] 3.4 Submit creates position and redirects to list
-- [x] 3.5 Validation errors display on invalid input
-- [x] 3.6 Edit form pre-fills with existing data
-- [x] 3.7 Stale evaluation banner shows when evaluation exists
-- [x] 3.8 Requirements editor: add, remove, expand for description
+- [x] 3.3 Create form renders with all fields at `/positions/new` — cfce21d
+- [x] 3.4 Submit creates position and redirects to list — cfce21d
+- [x] 3.5 Validation errors display on invalid input — cfce21d
+- [x] 3.6 Edit form pre-fills with existing data — cfce21d
+- [x] 3.7 Stale evaluation banner shows when evaluation exists — cfce21d
+- [x] 3.8 Requirements editor: add, remove, expand for description — cfce21d
 
 ### Phase 4: Integration & Polish
 
 #### Automated
 
-- [ ] 4.1 Build passes: `npm run build`
-- [ ] 4.2 Lint passes: `npm run lint`
+- [x] 4.1 Build passes: `npm run build`
+- [x] 4.2 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 4.3 Sign-in redirects to `/positions`
-- [ ] 4.4 `/` and `/dashboard` redirect to `/positions` for authenticated users
-- [ ] 4.5 Loading skeleton shows while positions fetch
-- [ ] 4.6 Position detail page displays all fields
-- [ ] 4.7 Full CRUD flow works end-to-end seamlessly
+- [x] 4.3 Sign-in redirects to `/positions`
+- [x] 4.4 `/` and `/dashboard` redirect to `/positions` for authenticated users
+- [x] 4.5 Loading skeleton shows while positions fetch
+- [x] 4.6 Position detail page displays all fields
+- [x] 4.7 Full CRUD flow works end-to-end seamlessly

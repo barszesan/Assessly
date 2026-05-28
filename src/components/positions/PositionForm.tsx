@@ -120,6 +120,20 @@ export function PositionForm({ mode, initialData, hasEvaluation }: PositionFormP
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="team">Team</Label>
+        <Input
+          id="team"
+          placeholder="e.g. Platform Engineering"
+          value={team}
+          onChange={(e) => {
+            setTeam(e.target.value);
+          }}
+          maxLength={200}
+        />
+        {errors.team && <p className="text-destructive text-sm">{errors.team[0]}</p>}
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="description">Description</Label>
         <Textarea
           id="description"
@@ -154,20 +168,6 @@ export function PositionForm({ mode, initialData, hasEvaluation }: PositionFormP
           </SelectContent>
         </Select>
         {errors.seniority && <p className="text-destructive text-sm">{errors.seniority[0]}</p>}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="team">Team</Label>
-        <Input
-          id="team"
-          placeholder="e.g. Platform Engineering"
-          value={team}
-          onChange={(e) => {
-            setTeam(e.target.value);
-          }}
-          maxLength={200}
-        />
-        {errors.team && <p className="text-destructive text-sm">{errors.team[0]}</p>}
       </div>
 
       <div className="space-y-2">

@@ -1,0 +1,115 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Topbar from "@/components/Topbar.astro";
+import { Badge } from "@/components/ui/badge";
+import { createClient } from "@/lib/supabase";
+import { getPosition, positionHasEvaluation } from "@/lib/services/positions";
+import { PositionDetailActions } from "@/components/positions/PositionDetailActions";
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect("/positions");
+}
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+if (!supabase) {
+  return Astro.redirect("/auth/signin");
+}
+
+const position = await getPosition(supabase, id);
+
+if (!position) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const hasEvaluation = await positionHasEvaluation(supabase, id);
+
+const seniorityColors: Record<string, string> = {
+  junior: "bg-green-100 text-green-800",
+  mid: "bg-blue-100 text-blue-800",
+  senior: "bg-purple-100 text-purple-800",
+};
+
+const createdDate = new Date(position.created_at).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout title={`${position.title} | NextChapter`}>
+  <div class="mx-auto max-w-3xl px-4 py-8">
+    <Topbar />
+
+    <div class="mb-6 flex items-start justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-2xl font-bold">{position.title}</h1>
+          <Badge className={seniorityColors[position.seniority]} variant="secondary">
+            {position.seniority}
+          </Badge>
+        </div>
+        {position.team && <p class="text-muted-foreground mt-1 text-sm">{position.team}</p>}
+        <p class="text-muted-foreground mt-1 text-xs">Created {createdDate}</p>
+      </div>
+      <PositionDetailActions positionId={position.id} positionTitle={position.title} client:load />
+    </div>
+
+    {
+      position.description && (
+        <section class="mb-8">
+          <h2 class="text-muted-foreground mb-2 text-sm font-medium tracking-wide uppercase">Description</h2>
+          <p class="text-sm leading-relaxed">{position.description}</p>
+        </section>
+      )
+    }
+
+    <section class="mb-8">
+      <h2 class="text-muted-foreground mb-3 text-sm font-medium tracking-wide uppercase">
+        Requirements ({position.requirements.length})
+      </h2>
+      <ul class="space-y-2">
+        {
+          position.requirements.map((req) => (
+            <li class="rounded-lg border p-3">
+              <span class="text-sm font-medium">{req.name}</span>
+              {req.description && <p class="text-muted-foreground mt-1 text-sm">{req.description}</p>}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-muted-foreground mb-3 text-sm font-medium tracking-wide uppercase">Candidates</h2>
+      <div class="rounded-lg border border-dashed p-6 text-center">
+        <p class="text-muted-foreground text-sm">No candidates uploaded yet</p>
+        <button disabled class="text-muted-foreground mt-2 cursor-not-allowed text-xs underline">
+          Upload CVs (coming soon)
+        </button>
+      </div>
+    </section>
+
+    {
+      hasEvaluation && (
+        <section class="mb-8">
+          <h2 class="text-muted-foreground mb-3 text-sm font-medium tracking-wide uppercase">Evaluation</h2>
+          <div class="rounded-lg border bg-green-50 p-4">
+            <p class="text-sm font-medium text-green-800">Evaluation complete</p>
+            <p class="mt-1 text-xs text-green-600">Detailed results will be available here in a future update.</p>
+          </div>
+        </section>
+      )
+    }
+
+    <div class="mt-8">
+      <a href="/positions" class="text-muted-foreground hover:text-foreground text-sm underline">
+        &larr; Back to positions
+      </a>
+    </div>
+  </div>
+</Layout>
