@@ -464,31 +464,31 @@ Wire up navigation flows, add loading states, handle edge cases, and redirect da
 
 #### Automated
 
-- [x] 1.1 TypeScript compiles: `npm run build`
-- [x] 1.2 Linting passes: `npm run lint`
+- [x] 1.1 TypeScript compiles: `npm run build` — 695f48e
+- [x] 1.2 Linting passes: `npm run lint` — 695f48e
 
 #### Manual
 
-- [x] 1.3 GET `/api/positions/` returns empty array for authenticated user
-- [x] 1.4 POST `/api/positions/` with valid body returns 201
-- [x] 1.5 POST with invalid body returns 400 with field-level details
-- [x] 1.6 GET/PUT/DELETE on `/api/positions/:id` work correctly
-- [x] 1.7 Unauthenticated requests return 401
+- [x] 1.3 GET `/api/positions/` returns empty array for authenticated user — 695f48e
+- [x] 1.4 POST `/api/positions/` with valid body returns 201 — 695f48e
+- [x] 1.5 POST with invalid body returns 400 with field-level details — 695f48e
+- [x] 1.6 GET/PUT/DELETE on `/api/positions/:id` work correctly — 695f48e
+- [x] 1.7 Unauthenticated requests return 401 — 695f48e
 
 ### Phase 2: UI Components & Positions List
 
 #### Automated
 
-- [ ] 2.1 Build passes: `npm run build`
-- [ ] 2.2 Lint passes: `npm run lint`
+- [x] 2.1 Build passes: `npm run build`
+- [x] 2.2 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.3 Empty state with CTA renders at `/positions`
-- [ ] 2.4 Positions display in card grid after creation
-- [ ] 2.5 Delete confirmation dialog works and removes position
-- [ ] 2.6 Topbar shows Positions link for authenticated users
-- [ ] 2.7 Unauthenticated access redirects to sign-in
+- [x] 2.3 Empty state with CTA renders at `/positions`
+- [x] 2.4 Positions display in card grid after creation
+- [x] 2.5 Delete confirmation dialog works and removes position
+- [x] 2.6 Topbar shows Positions link for authenticated users
+- [x] 2.7 Unauthenticated access redirects to sign-in
 
 ### Phase 3: Position Create/Edit Form
 
