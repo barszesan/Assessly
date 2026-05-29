@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { MAX_EXTRACTED_TEXT_CHARS } from "@/lib/schemas/candidate";
 
 export type CvPreviewStatus = "success" | "warning" | "failed";
 
@@ -88,6 +89,7 @@ export function CvPreviewCard({ candidate, onRemove, onUpdateText, disabled }: C
               onUpdateText(e.target.value);
             }}
             rows={8}
+            maxLength={MAX_EXTRACTED_TEXT_CHARS}
             disabled={disabled}
             placeholder="Paste or edit extracted text here..."
           />

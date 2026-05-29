@@ -3,14 +3,17 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { extractTextFromPdf } from "@/lib/pdf-extract";
 import { validateFiles, ACCEPTED_EXTENSION, ACCEPTED_MIME_TYPE } from "@/lib/file-validation";
+import { MAX_EXTRACTED_TEXT_CHARS } from "@/lib/schemas/candidate";
 import { CvPreviewList } from "@/components/candidates/CvPreviewList";
 import type { CvPreviewItem } from "@/components/candidates/CvPreviewCard";
 import type { Candidate } from "@/types";
+import type { PdfExtractResult } from "@/lib/pdf-extract";
 
 type FlowState = "idle" | "extracting" | "previewing" | "uploading";
 
 const WARNING_TEXT_THRESHOLD = 50;
 const MAX_TOTAL = 10;
+const EXTRACTION_CONCURRENCY = 2;
 
 interface CvUploadFlowProps {
   positionId: string;
@@ -39,6 +42,26 @@ async function parseError(res: Response): Promise<string> {
   } catch {
     return `Request failed (${res.status.toString()})`;
   }
+}
+
+async function extractWithConcurrency(files: File[]): Promise<PromiseSettledResult<PdfExtractResult>[]> {
+  const results: PromiseSettledResult<PdfExtractResult>[] = [];
+  let nextIndex = 0;
+
+  async function worker() {
+    while (nextIndex < files.length) {
+      const index = nextIndex;
+      nextIndex += 1;
+      try {
+        results[index] = { status: "fulfilled", value: await extractTextFromPdf(files[index]) };
+      } catch (reason) {
+        results[index] = { status: "rejected", reason };
+      }
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(EXTRACTION_CONCURRENCY, files.length) }, worker));
+  return results;
 }
 
 export function CvUploadFlow({
@@ -75,8 +98,7 @@ export function CvUploadFlow({
 
     setState("extracting");
 
-    // Extract in parallel — independent per-file work, browser handles concurrency.
-    const results = await Promise.allSettled(valid.map((file) => extractTextFromPdf(file)));
+    const results = await extractWithConcurrency(valid);
 
     const items: CvPreviewItem[] = valid.map((file, idx) => {
       const result = results[idx];
@@ -100,8 +122,15 @@ export function CvUploadFlow({
         };
       }
       const text = outcome.text;
-      const status: CvPreviewItem["status"] = text.length < WARNING_TEXT_THRESHOLD ? "warning" : "success";
-      return { file, fileName: file.name, extractedText: text, status };
+      const status: CvPreviewItem["status"] =
+        outcome.truncated || text.length < WARNING_TEXT_THRESHOLD ? "warning" : "success";
+      return {
+        file,
+        fileName: file.name,
+        extractedText: text,
+        status,
+        errorMessage: outcome.truncated ? "Extraction was truncated to keep browser performance stable." : undefined,
+      };
     });
 
     setPreviews(items);
@@ -129,6 +158,12 @@ export function CvUploadFlow({
     );
     if (confirmable.length === 0) {
       toast.error("Nothing to upload — all items failed or are empty.");
+      return;
+    }
+
+    const tooLong = confirmable.find((item) => (item.extractedText ?? "").length > MAX_EXTRACTED_TEXT_CHARS);
+    if (tooLong) {
+      toast.error(`${tooLong.fileName}: extracted text is too long.`);
       return;
     }
 

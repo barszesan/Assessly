@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase";
 import { errorResponse, jsonResponse, requireAuth, UUID_REGEX } from "@/lib/api-helpers";
 import { getPosition } from "@/lib/services/positions";
 import { countCandidates } from "@/lib/services/candidates";
+import { candidateFileNameSchema } from "@/lib/schemas/candidate";
 
 export const prerender = false;
 
@@ -23,6 +24,14 @@ export const POST: APIRoute = async (context) => {
   // Verify position exists and belongs to the user (RLS enforces ownership).
   const position = await getPosition(supabase, positionId).catch(() => null);
   if (!position) return errorResponse("Position not found", 404);
+
+  const contentLength = context.request.headers.get("content-length");
+  if (contentLength) {
+    const bodyBytes = Number(contentLength);
+    if (Number.isFinite(bodyBytes) && bodyBytes > MAX_BATCH_BYTES) {
+      return errorResponse("Batch exceeds 50MB total size limit", 413);
+    }
+  }
 
   let formData: FormData;
   try {
@@ -45,6 +54,10 @@ export const POST: APIRoute = async (context) => {
   // Per-file validation
   let totalBytes = 0;
   for (const file of files) {
+    const fileNameResult = candidateFileNameSchema.safeParse(file.name);
+    if (!fileNameResult.success) {
+      return errorResponse(`File "${file.name}" has an invalid filename`, 400);
+    }
     if (file.type !== "application/pdf") {
       return errorResponse(`File "${file.name}" is not a PDF`, 400);
     }
@@ -82,6 +95,10 @@ export const POST: APIRoute = async (context) => {
     });
 
     if (error) {
+      const uploadedPaths = uploads.map((upload) => upload.file_path);
+      if (uploadedPaths.length > 0) {
+        await supabase.storage.from("cvs").remove(uploadedPaths);
+      }
       return errorResponse(`Failed to upload "${file.name}": ${error.message}`, 500);
     }
 

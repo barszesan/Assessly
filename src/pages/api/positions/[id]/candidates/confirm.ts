@@ -9,6 +9,10 @@ export const prerender = false;
 
 const MAX_TOTAL_CANDIDATES = 10;
 
+function isUniqueViolation(err: unknown): boolean {
+  return typeof err === "object" && err !== null && "code" in err && err.code === "23505";
+}
+
 export const POST: APIRoute = async (context) => {
   const auth = requireAuth(context.locals);
   if ("error" in auth) return auth.error;
@@ -66,7 +70,10 @@ export const POST: APIRoute = async (context) => {
   try {
     const candidates = await createCandidatesBatch(supabase, inputs);
     return jsonResponse({ candidates }, 201);
-  } catch {
+  } catch (err) {
+    if (isUniqueViolation(err)) {
+      return errorResponse("A candidate with this filename already exists", 400);
+    }
     return errorResponse("Failed to create candidates", 500);
   }
 };

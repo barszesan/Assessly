@@ -6,7 +6,11 @@
  * avoids any SSR-time evaluation in Astro / Cloudflare Workers).
  */
 
-export type PdfExtractResult = { text: string } | { error: string };
+import { MAX_EXTRACTED_TEXT_CHARS } from "@/lib/schemas/candidate";
+
+export type PdfExtractResult = { text: string; truncated?: boolean } | { error: string };
+
+const MAX_PDF_EXTRACT_PAGES = 50;
 
 let workerConfigured = false;
 
@@ -29,8 +33,10 @@ export async function extractTextFromPdf(file: File): Promise<PdfExtractResult> 
     const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer) });
     const pdf = await loadingTask.promise;
 
+    const pageLimit = Math.min(pdf.numPages, MAX_PDF_EXTRACT_PAGES);
     const pageTexts: string[] = [];
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    let truncated = pdf.numPages > MAX_PDF_EXTRACT_PAGES;
+    for (let pageNum = 1; pageNum <= pageLimit; pageNum++) {
       const page = await pdf.getPage(pageNum);
       const content = await page.getTextContent();
       const pageText = content.items
@@ -39,10 +45,14 @@ export async function extractTextFromPdf(file: File): Promise<PdfExtractResult> 
         .replace(/\s+/g, " ")
         .trim();
       pageTexts.push(pageText);
+      if (pageTexts.join("\n\n").length >= MAX_EXTRACTED_TEXT_CHARS) {
+        truncated = true;
+        break;
+      }
     }
 
-    const text = pageTexts.filter(Boolean).join("\n\n").trim();
-    return { text };
+    const text = pageTexts.filter(Boolean).join("\n\n").trim().slice(0, MAX_EXTRACTED_TEXT_CHARS);
+    return { text, truncated };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown extraction error";
     return { error: message };
