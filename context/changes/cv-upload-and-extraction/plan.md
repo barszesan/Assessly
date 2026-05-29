@@ -438,14 +438,14 @@ Wire the upload flow into the position detail page. Replace the placeholder "Upl
 
 #### Automated
 
-- [x] 3.1 TypeScript compiles: `npm run build`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 Page loads without errors at `/positions/:id`
+- [x] 3.1 TypeScript compiles: `npm run build` — 28df8d0
+- [x] 3.2 Linting passes: `npm run lint` — 28df8d0
+- [x] 3.3 Page loads without errors at `/positions/:id` — 28df8d0
 
 #### Manual
 
-- [x] 3.4 Empty state shows upload button
-- [x] 3.5 Full upload flow works end-to-end from position page
-- [x] 3.6 Delete candidate works with confirmation
-- [x] 3.7 Additive uploads work (existing + new ≤ 10)
-- [x] 3.8 Duplicate filename check works against existing candidates
+- [x] 3.4 Empty state shows upload button — 28df8d0
+- [x] 3.5 Full upload flow works end-to-end from position page — 28df8d0
+- [x] 3.6 Delete candidate works with confirmation — 28df8d0
+- [x] 3.7 Additive uploads work (existing + new ≤ 10) — 28df8d0
+- [x] 3.8 Duplicate filename check works against existing candidates — 28df8d0
