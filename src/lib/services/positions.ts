@@ -58,7 +58,27 @@ export async function updatePosition(
   return data as Position;
 }
 
-export async function deletePosition(supabase: SupabaseClient, id: string): Promise<boolean> {
+export async function deletePosition(supabase: SupabaseClient, id: string, userId: string): Promise<boolean> {
+  // Clean up Supabase Storage objects under {user_id}/{position_id}/ before
+  // deleting the DB row. DB ON DELETE CASCADE only removes candidate rows,
+  // not the underlying CV files in storage.
+  const folder = `${userId}/${id}`;
+  const { data: objects, error: listError } = await supabase.storage.from("cvs").list(folder);
+
+  if (listError) {
+    // Treat genuinely missing folders as empty; surface anything else.
+    const message = listError.message.toLowerCase();
+    if (!message.includes("not found") && !message.includes("no such")) {
+      throw listError;
+    }
+  }
+
+  if (objects && objects.length > 0) {
+    const paths = objects.map((o) => `${folder}/${o.name}`);
+    const { error: removeError } = await supabase.storage.from("cvs").remove(paths);
+    if (removeError) throw removeError;
+  }
+
   const { error, count } = await supabase.from("positions").delete({ count: "exact" }).eq("id", id);
 
   if (error) throw error;

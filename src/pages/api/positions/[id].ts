@@ -58,7 +58,7 @@ export const DELETE: APIRoute = async (context) => {
   if (!supabase) return errorResponse("Service unavailable", 503);
 
   try {
-    const deleted = await deletePosition(supabase, id);
+    const deleted = await deletePosition(supabase, id, auth.user.id);
     if (!deleted) return errorResponse("Position not found", 404);
     return new Response(null, { status: 204 });
   } catch {

@@ -3,7 +3,7 @@ project: "Assessly"
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-05-25
+updated: 2026-05-28
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -29,10 +29,10 @@ Recruiters on a small team spend too much time manually reviewing CVs and matchi
 
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 |---|---|---|---|---|---|
-| F-01 | database-schema-and-rls | (foundation) database schema and RLS policies for positions, candidates, and evaluations | — | NFR (data isolation), FR-001, FR-003, FR-004 | ready |
+| F-01 | database-schema-and-rls | (foundation) database schema and RLS policies for positions, candidates, and evaluations | — | NFR (data isolation), FR-001, FR-003, FR-004 | done |
 | F-02 | ai-provider-integration | (foundation) AI provider selected and integrated; base prompt routing works | — | FR-004, FR-005 | ready |
-| S-01 | position-management | create a position with structured requirements and seniority; view, edit, and delete positions | F-01 | US-01, US-02, FR-001, FR-002 | proposed |
-| S-02 | cv-upload-and-extraction | upload PDFs to a position and confirm text extraction before evaluation | S-01, F-01 | US-01, US-02, FR-003 | proposed |
+| S-01 | position-management | create a position with structured requirements and seniority; view, edit, and delete positions | F-01 | US-01, US-02, FR-001, FR-002 | done |
+| S-02 | cv-upload-and-extraction | upload PDFs to a position and confirm text extraction before evaluation | S-01, F-01 | US-01, US-02, FR-003 | ready |
 | S-03 | ai-evaluation-and-questions | trigger AI evaluation — ranking (tiered: 1/2/3+ CVs) + 5 interview questions per position | S-02, F-02 | US-01, US-02, FR-004, FR-005 | proposed |
 
 ## Streams
@@ -69,7 +69,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Schema designed too early may require corrective migrations when AI logic reveals new needs; sequenced first because all slices depend on it.
-- **Status:** ready
+- **Status:** done
 
 ### F-02: AI provider integration
 
@@ -99,6 +99,18 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Requirements structure (flat list vs. categories vs. weights) affects AI prompt quality downstream; a simple flat list is sufficient for MVP and easy to extend.
 - **Status:** proposed
 
+### S-01: Position management
+
+- **Outcome:** recruiter can create a position with a structured requirements list and seniority level; view, edit, and delete their positions. Editing after evaluation shows a stale-results warning.
+- **Change ID:** position-management
+- **PRD refs:** FR-001, FR-002, US-01, US-02
+- **Prerequisites:** F-01
+- **Parallel with:** F-02
+- **Blockers:** —
+- **Unknowns:** —
+- **Risk:** Requirements structure (flat list vs. categories vs. weights) affects AI prompt quality downstream; a simple flat list is sufficient for MVP and easy to extend.
+- **Status:** done
+
 ### S-02: CV upload and extraction
 
 - **Outcome:** recruiter can upload 1-10 PDFs (max 5MB each) to a position; after upload they see a preview of extracted text and can confirm/correct before evaluation.
@@ -109,7 +121,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** PDF text extraction is unreliable for complex layouts; the confirmation preview (per PRD) mitigates this risk, but the UX confirmation step adds friction.
-- **Status:** proposed
+- **Status:** ready
 
 ### S-03: AI evaluation and interview questions
 
@@ -128,10 +140,10 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 | Roadmap ID | Change ID | Suggested issue title | Ready for `/10x-plan` | Notes |
 |---|---|---|---|---|
-| F-01 | database-schema-and-rls | DB schema: positions, candidates, evaluations + RLS | yes | Run `/10x-plan database-schema-and-rls` |
+| F-01 | database-schema-and-rls | DB schema: positions, candidates, evaluations + RLS | done | — |
 | F-02 | ai-provider-integration | AI provider integration (selection + scaffold) | yes | Run `/10x-plan ai-provider-integration` |
-| S-01 | position-management | Position CRUD with structured requirements | no | Waiting on F-01 |
-| S-02 | cv-upload-and-extraction | PDF upload + text extraction with preview | no | Waiting on S-01 |
+| S-01 | position-management | Position CRUD with structured requirements | done | — |
+| S-02 | cv-upload-and-extraction | PDF upload + text extraction with preview | yes | Run `/10x-plan cv-upload-and-extraction` |
 | S-03 | ai-evaluation-and-questions | AI evaluation: ranking + interview questions | no | Waiting on S-02 + F-02 |
 
 ## Open Roadmap Questions
@@ -151,3 +163,5 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Done
 
+- **F-01 (database-schema-and-rls):** migrations delivered (`20260525120000`, `20260528120000`); positions, candidates, evaluations tables with RLS.
+- **S-01 (position-management):** full CRUD — pages, API routes, service, components including stale-evaluation banner.
