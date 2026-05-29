@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase";
 import { getPosition, positionHasEvaluation } from "@/lib/services/positions";
 import { PositionDetailActions } from "@/components/positions/PositionDetailActions";
+import { CandidateList } from "@/components/candidates/CandidateList";
 
 export const prerender = false;
 
@@ -86,12 +87,7 @@ const createdDate = new Date(position.created_at).toLocaleDateString("en-US", {
 
     <section class="mb-8">
       <h2 class="text-muted-foreground mb-3 text-sm font-medium tracking-wide uppercase">Candidates</h2>
-      <div class="rounded-lg border border-dashed p-6 text-center">
-        <p class="text-muted-foreground text-sm">No candidates uploaded yet</p>
-        <button disabled class="text-muted-foreground mt-2 cursor-not-allowed text-xs underline">
-          Upload CVs (coming soon)
-        </button>
-      </div>
+      <CandidateList positionId={position.id} client:load />
     </section>
 
     {

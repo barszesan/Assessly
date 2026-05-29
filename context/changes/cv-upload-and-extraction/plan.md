@@ -422,30 +422,30 @@ Wire the upload flow into the position detail page. Replace the placeholder "Upl
 
 #### Automated
 
-- [x] 2.1 TypeScript compiles: `npm run build`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 No SSR errors (pdf.js only loads client-side)
+- [x] 2.1 TypeScript compiles: `npm run build` — 0f6e0da
+- [x] 2.2 Linting passes: `npm run lint` — 0f6e0da
+- [x] 2.3 No SSR errors (pdf.js only loads client-side) — 0f6e0da
 
 #### Manual
 
-- [x] 2.4 Select 3 PDFs → extraction runs → previews appear (deferred to Phase 3 — flow not mounted in Phase 2)
-- [x] 2.5 Edit extraction → text updates (deferred to Phase 3 — flow not mounted in Phase 2)
-- [x] 2.6 Remove file → preview list updates (deferred to Phase 3 — flow not mounted in Phase 2)
-- [x] 2.7 Non-PDF blocked, >5MB blocked, duplicate filename warned (deferred to Phase 3 — flow not mounted in Phase 2)
-- [x] 2.8 Scanned/image PDF shows warning badge (deferred to Phase 3 — flow not mounted in Phase 2)
+- [x] 2.4 Select 3 PDFs → extraction runs → previews appear (deferred to Phase 3 — flow not mounted in Phase 2) — 0f6e0da
+- [x] 2.5 Edit extraction → text updates (deferred to Phase 3 — flow not mounted in Phase 2) — 0f6e0da
+- [x] 2.6 Remove file → preview list updates (deferred to Phase 3 — flow not mounted in Phase 2) — 0f6e0da
+- [x] 2.7 Non-PDF blocked, >5MB blocked, duplicate filename warned (deferred to Phase 3 — flow not mounted in Phase 2) — 0f6e0da
+- [x] 2.8 Scanned/image PDF shows warning badge (deferred to Phase 3 — flow not mounted in Phase 2) — 0f6e0da
 
 ### Phase 3: Position Detail Integration
 
 #### Automated
 
-- [ ] 3.1 TypeScript compiles: `npm run build`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Page loads without errors at `/positions/:id`
+- [x] 3.1 TypeScript compiles: `npm run build`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Page loads without errors at `/positions/:id`
 
 #### Manual
 
-- [ ] 3.4 Empty state shows upload button
-- [ ] 3.5 Full upload flow works end-to-end from position page
-- [ ] 3.6 Delete candidate works with confirmation
-- [ ] 3.7 Additive uploads work (existing + new ≤ 10)
-- [ ] 3.8 Duplicate filename check works against existing candidates
+- [x] 3.4 Empty state shows upload button
+- [x] 3.5 Full upload flow works end-to-end from position page
+- [x] 3.6 Delete candidate works with confirmation
+- [x] 3.7 Additive uploads work (existing + new ≤ 10)
+- [x] 3.8 Duplicate filename check works against existing candidates
