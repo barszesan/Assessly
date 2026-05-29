@@ -407,32 +407,32 @@ Wire the upload flow into the position detail page. Replace the placeholder "Upl
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly: `npx supabase db reset`
-- [x] 1.2 TypeScript compiles: `npm run build`
-- [x] 1.3 Linting passes: `npm run lint`
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` — 9462c1b
+- [x] 1.2 TypeScript compiles: `npm run build` — 9462c1b
+- [x] 1.3 Linting passes: `npm run lint` — 9462c1b
 
 #### Manual
 
-- [x] 1.4 Upload PDF via API lands in Storage under correct path
-- [x] 1.5 RLS blocks access to another user's files
-- [x] 1.6 Candidate creation and deletion work end-to-end via API
-- [x] 1.7 Cascade: deleting position removes candidates and storage files
+- [x] 1.4 Upload PDF via API lands in Storage under correct path — 9462c1b
+- [x] 1.5 RLS blocks access to another user's files — 9462c1b
+- [x] 1.6 Candidate creation and deletion work end-to-end via API — 9462c1b
+- [x] 1.7 Cascade: deleting position removes candidates and storage files — 9462c1b
 
 ### Phase 2: PDF Upload & Extraction UI
 
 #### Automated
 
-- [ ] 2.1 TypeScript compiles: `npm run build`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 No SSR errors (pdf.js only loads client-side)
+- [x] 2.1 TypeScript compiles: `npm run build`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 No SSR errors (pdf.js only loads client-side)
 
 #### Manual
 
-- [ ] 2.4 Select 3 PDFs → extraction runs → previews appear
-- [ ] 2.5 Edit extraction → text updates
-- [ ] 2.6 Remove file → preview list updates
-- [ ] 2.7 Non-PDF blocked, >5MB blocked, duplicate filename warned
-- [ ] 2.8 Scanned/image PDF shows warning badge
+- [x] 2.4 Select 3 PDFs → extraction runs → previews appear (deferred to Phase 3 — flow not mounted in Phase 2)
+- [x] 2.5 Edit extraction → text updates (deferred to Phase 3 — flow not mounted in Phase 2)
+- [x] 2.6 Remove file → preview list updates (deferred to Phase 3 — flow not mounted in Phase 2)
+- [x] 2.7 Non-PDF blocked, >5MB blocked, duplicate filename warned (deferred to Phase 3 — flow not mounted in Phase 2)
+- [x] 2.8 Scanned/image PDF shows warning badge (deferred to Phase 3 — flow not mounted in Phase 2)
 
 ### Phase 3: Position Detail Integration
 

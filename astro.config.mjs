@@ -12,6 +12,16 @@ export default defineConfig({
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+    // pdfjs-dist is browser-only (dynamically imported from React islands).
+    // Excluding it from SSR optimization prevents Vite from pre-bundling it
+    // into the server graph, which otherwise pulls a second React copy into
+    // SSR and triggers "Invalid hook call" errors across unrelated islands.
+    optimizeDeps: {
+      exclude: ["pdfjs-dist"],
+    },
+    ssr: {
+      external: ["pdfjs-dist"],
+    },
   },
   adapter: cloudflare(),
   env: {
