@@ -21,3 +21,5 @@ export interface AiProviderError {
   message: string;
   status?: number;
 }
+
+export type AiProviderResult<T> = { ok: true; data: T } | { ok: false; error: AiProviderError };

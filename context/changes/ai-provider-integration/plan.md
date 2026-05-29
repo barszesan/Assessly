@@ -295,28 +295,28 @@ Add deterministic automated coverage for the provider boundary and make manual l
 
 #### Automated
 
-- [x] 1.1 TypeScript build passes: `npm run build`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 AI env fields are server-only in `astro.config.mjs`
+- [x] 1.1 TypeScript build passes: `npm run build` — 2fb598c
+- [x] 1.2 Linting passes: `npm run lint` — 2fb598c
+- [x] 1.3 AI env fields are server-only in `astro.config.mjs` — 2fb598c
 
 #### Manual
 
-- [x] 1.4 `.env.example` lists OpenAI placeholders without real secrets
-- [x] 1.5 No OpenAI env imports appear in client React components
+- [x] 1.4 `.env.example` lists OpenAI placeholders without real secrets — 2fb598c
+- [x] 1.5 No OpenAI env imports appear in client React components — 2fb598c
 
 ### Phase 2: OpenAI Client and Authenticated Smoke Route
 
 #### Automated
 
-- [ ] 2.1 TypeScript build passes: `npm run build`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Smoke route exports `prerender = false` and uppercase `POST`
+- [x] 2.1 TypeScript build passes: `npm run build`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Smoke route exports `prerender = false` and uppercase `POST`
 
 #### Manual
 
-- [ ] 2.4 Missing OpenAI config returns authenticated smoke-test HTTP `503`
-- [ ] 2.5 Valid OpenAI config returns schema-valid smoke-test HTTP `200`
-- [ ] 2.6 Smoke route uses synthetic content only and no candidate/CV data
+- [x] 2.4 Missing OpenAI config returns authenticated smoke-test HTTP `503`
+- [x] 2.5 Valid OpenAI config returns schema-valid smoke-test HTTP `200`
+- [x] 2.6 Smoke route uses synthetic content only and no candidate/CV data
 
 ### Phase 3: Deterministic Tests and Live Verification Docs
 

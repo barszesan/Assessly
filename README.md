@@ -148,6 +148,19 @@ Users can then sign in immediately after sign-up without clicking a confirmation
 
 Route protection is handled in `src/middleware.ts`. Add paths to the `PROTECTED_ROUTES` array there to require authentication.
 
+## AI Provider Configuration
+
+AI features use OpenAI through server-only Astro env variables. For local development, add these values to `.dev.vars`:
+
+```bash
+OPENAI_API_KEY=<your-openai-api-key>
+OPENAI_MODEL=gpt-4.1-mini
+```
+
+`OPENAI_API_KEY` is required only for AI routes. `OPENAI_MODEL` is optional and defaults to `gpt-4.1-mini` in server code when omitted.
+
+After signing in locally, verify provider wiring with an authenticated request to `POST /api/ai/smoke-test`. The endpoint uses synthetic smoke-test content only and returns `503` when OpenAI is not configured.
+
 ## Deployment
 
 This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/).
@@ -164,7 +177,7 @@ npm run build
 npx wrangler deploy
 ```
 
-Set `SUPABASE_URL` and `SUPABASE_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
+Set `SUPABASE_URL`, `SUPABASE_KEY`, and `OPENAI_API_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`. Set `OPENAI_MODEL` the same way if you do not want the server default.
 
 ## CI
 
