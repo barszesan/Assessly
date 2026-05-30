@@ -322,12 +322,12 @@ Add deterministic automated coverage for the provider boundary and make manual l
 
 #### Automated
 
-- [x] 3.1 Unit tests pass: `npm run test`
-- [x] 3.2 TypeScript build passes: `npm run build`
-- [x] 3.3 Linting passes: `npm run lint`
+- [x] 3.1 Unit tests pass: `npm run test` — 495c2b7
+- [x] 3.2 TypeScript build passes: `npm run build` — 495c2b7
+- [x] 3.3 Linting passes: `npm run lint` — 495c2b7
 
 #### Manual
 
-- [x] 3.4 README missing-config smoke steps produce documented `503`
-- [x] 3.5 README configured-provider smoke steps produce schema-valid `200`
-- [x] 3.6 No CV/candidate/position content is sent to OpenAI in this change
+- [x] 3.4 README missing-config smoke steps produce documented `503` — 495c2b7
+- [x] 3.5 README configured-provider smoke steps produce schema-valid `200` — 495c2b7
+- [x] 3.6 No CV/candidate/position content is sent to OpenAI in this change — 495c2b7

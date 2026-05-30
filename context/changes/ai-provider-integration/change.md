@@ -1,9 +1,9 @@
 ---
 change_id: ai-provider-integration
 title: AI provider integration
-status: implementing
+status: implemented
 created: 2026-05-29
-updated: 2026-05-29
+updated: 2026-05-30
 archived_at: null
 ---
 
