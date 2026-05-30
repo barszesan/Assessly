@@ -5,8 +5,9 @@ import type { AiProviderResult, AiSmokeResult } from "@/lib/ai/types";
 const DEFAULT_OPENAI_MODEL = "gpt-4.1-mini";
 const OPENAI_TIMEOUT_MS = 10_000;
 const OPENAI_MAX_OUTPUT_TOKENS = 80;
+type Fetcher = typeof fetch;
 
-export async function runAiSmokeTest(): Promise<AiProviderResult<AiSmokeResult>> {
+export async function runAiSmokeTest(fetcher?: Fetcher): Promise<AiProviderResult<AiSmokeResult>> {
   if (!OPENAI_API_KEY) {
     return {
       ok: false,
@@ -17,10 +18,13 @@ export async function runAiSmokeTest(): Promise<AiProviderResult<AiSmokeResult>>
     };
   }
 
-  return runOpenAiSmokeTest({
-    apiKey: OPENAI_API_KEY,
-    model: OPENAI_MODEL ?? DEFAULT_OPENAI_MODEL,
-    timeoutMs: OPENAI_TIMEOUT_MS,
-    maxOutputTokens: OPENAI_MAX_OUTPUT_TOKENS,
-  });
+  return runOpenAiSmokeTest(
+    {
+      apiKey: OPENAI_API_KEY,
+      model: OPENAI_MODEL ?? DEFAULT_OPENAI_MODEL,
+      timeoutMs: OPENAI_TIMEOUT_MS,
+      maxOutputTokens: OPENAI_MAX_OUTPUT_TOKENS,
+    },
+    fetcher,
+  );
 }

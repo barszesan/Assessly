@@ -159,7 +159,50 @@ OPENAI_MODEL=gpt-4.1-mini
 
 `OPENAI_API_KEY` is required only for AI routes. `OPENAI_MODEL` is optional and defaults to `gpt-4.1-mini` in server code when omitted.
 
-After signing in locally, verify provider wiring with an authenticated request to `POST /api/ai/smoke-test`. The endpoint uses synthetic smoke-test content only and returns `503` when OpenAI is not configured.
+### Smoke-test verification
+
+The smoke-test endpoint is authenticated and uses synthetic content only. It never reads candidates, CV text, positions, or evaluations.
+
+1. Start local Supabase and the dev server:
+
+```bash
+npx supabase start
+npm run dev
+```
+
+2. Open `http://localhost:4321/auth/signin` and sign in.
+
+3. In the signed-in browser session, open DevTools, go to the Console tab, and run the missing-config check with `OPENAI_API_KEY` absent from `.dev.vars`:
+
+```js
+await fetch("/api/ai/smoke-test", { method: "POST" }).then(async (response) => ({
+  status: response.status,
+  body: await response.json(),
+}));
+```
+
+Expected result:
+
+```js
+{ status: 503, body: { error: "AI provider config is missing" } }
+```
+
+4. Add OpenAI credentials to `.dev.vars`, then restart `npm run dev`:
+
+```bash
+OPENAI_API_KEY=<your-openai-api-key>
+OPENAI_MODEL=gpt-4o-mini
+```
+
+5. Sign in again if the session expired, then rerun the same browser Console request.
+
+Expected result:
+
+```js
+{ status: 200, body: { ok: true, message: "AI provider smoke test passed" } }
+```
+
+If the configured-provider check returns `429`, check OpenAI project billing/quota or try a different available model. If it returns `401` or `403`, verify the API key and project access.
 
 ## Deployment
 

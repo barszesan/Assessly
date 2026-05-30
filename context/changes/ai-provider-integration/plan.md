@@ -308,26 +308,26 @@ Add deterministic automated coverage for the provider boundary and make manual l
 
 #### Automated
 
-- [x] 2.1 TypeScript build passes: `npm run build`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Smoke route exports `prerender = false` and uppercase `POST`
+- [x] 2.1 TypeScript build passes: `npm run build` — 82c6bf0
+- [x] 2.2 Linting passes: `npm run lint` — 82c6bf0
+- [x] 2.3 Smoke route exports `prerender = false` and uppercase `POST` — 82c6bf0
 
 #### Manual
 
-- [x] 2.4 Missing OpenAI config returns authenticated smoke-test HTTP `503`
-- [x] 2.5 Valid OpenAI config returns schema-valid smoke-test HTTP `200`
-- [x] 2.6 Smoke route uses synthetic content only and no candidate/CV data
+- [x] 2.4 Missing OpenAI config returns authenticated smoke-test HTTP `503` — 82c6bf0
+- [x] 2.5 Valid OpenAI config returns schema-valid smoke-test HTTP `200` — 82c6bf0
+- [x] 2.6 Smoke route uses synthetic content only and no candidate/CV data — 82c6bf0
 
 ### Phase 3: Deterministic Tests and Live Verification Docs
 
 #### Automated
 
-- [ ] 3.1 Unit tests pass: `npm run test`
-- [ ] 3.2 TypeScript build passes: `npm run build`
-- [ ] 3.3 Linting passes: `npm run lint`
+- [x] 3.1 Unit tests pass: `npm run test`
+- [x] 3.2 TypeScript build passes: `npm run build`
+- [x] 3.3 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 3.4 README missing-config smoke steps produce documented `503`
-- [ ] 3.5 README configured-provider smoke steps produce schema-valid `200`
-- [ ] 3.6 No CV/candidate/position content is sent to OpenAI in this change
+- [x] 3.4 README missing-config smoke steps produce documented `503`
+- [x] 3.5 README configured-provider smoke steps produce schema-valid `200`
+- [x] 3.6 No CV/candidate/position content is sent to OpenAI in this change
